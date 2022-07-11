@@ -1,8 +1,52 @@
-import pygame
+import pygame as pygame
 import random
 import math
 import time
 import sys
+from pygame.constants import QUIT, KEYDOWN, K_ESCAPE
+from pygame.locals import*
+
+
+def exit():
+    pygame.QUIT()
+    sys.exit()
+
+
+def pressKeyShortcut():
+    while True:
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit()
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    exit()
+                return
+
+
+def playerCrash(player_crashRect, opponent):
+    for ado in opponent:
+
+        if player_crashRect.colliderect(ado['rect']):
+            return True
+    return False
+
+
+def txtObjects(t, f, s, x, y, txt_c):
+
+    txt_objects = f.render(t, 1, txt_c)
+    txt_Rect = txt_objects.get_rect()
+    txt_Rect.topleft = (x, y)
+    s.blit(txt_objects, txt_Rect)
+
+
+pygame.init()
+time.clock = pygame.time.Clock()
+screen_display_window = pygame.display.set_mode((1200, 800))
+pygame.display.set_caption('Dodgem!')
+pygame.mouse.set_visible(False)
+fontsize = pygame.font.SysFont(None, 30)
 
 pygame.init()
 pygame.mixer.init()
@@ -213,7 +257,7 @@ def gameLoop():
     asteroid1 = pygame.image.load("Dodgem!/asteroid1.png")
     asteroid1X = random.randint(178, 490)
     asteroid1Y = 100
-    asteroidYchange = 10
+    asteroid1Ychange = 10
 
     asteroid2 = pygame.image.load("Dodgem!/asteroid2.png")
     asteroid2X = random.randint(178, 490)
@@ -225,3 +269,162 @@ def gameLoop():
     asteroid3Y = 100
     asteroid3Ychange = 10
 
+    run = True
+    while run:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT():
+                run = False
+                pygame.QUIT()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    playerX_change += 5
+
+                if event.key == pygame.K_LEFT:
+                    playerX_change -= 5
+
+                if event.key == pygame.K_UP:
+                    playerY_change -= 5
+
+                if event.key == pygame.K_DOWN:
+                    playerY_change += 5
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    playerX_change = 0
+
+                if event.key == pygame.K_LEFT:
+                    playerX_change = 0
+
+                if event.key == pygame.K_UP:
+                    playerY_change = 0
+
+                if event.key == pygame.K_DOWN:
+                    playerY_change = 0
+        #FIXME Adjust coordinates
+        if playerX < 178:
+            playerX = 178
+        if playerX > 490:
+            playerX = 490
+
+        if playerY < 0:
+            playerY = 0
+        if playerY > 495:
+            playerY = 495
+
+        screen.fill((0, 0, 0,))
+        screen.blit(BG, (0, 0))
+        screen.blit(player, (playerX, playerY))
+
+        screen.blit(asteroid1, (asteroid1X, asteroid1Y))
+        screen.blit(asteroid2, (asteroid2X, asteroid2Y))
+        screen.blit(asteroid3, (asteroid3X, asteroid3Y))
+        #FIXME Adjust coordinates
+        showScore(570, 280)
+        showHighscore(0, 0)
+
+        playerX += playerX_change
+        playerY += playerY_change
+
+        asteroid1Y += asteroid1Ychange
+        asteroid2Y += asteroid2Ychange
+        asteroid3Y += asteroid3Ychange
+        #FIXME Adjust coordinates
+        if asteroid1Y > 670:
+            asteroid1Y = -100
+            asteroid1X = random.randint(178, 490)
+            score_value += 1
+        if asteroid2Y > 670:
+            asteroid2Y = -150
+            asteroid2X = random.randint(178, 490)
+            score_value += 1
+        if asteroid3Y > 670:
+            asteroid3Y = -200
+            asteroid3X = random.randint(178, 490)
+            score_value += 1
+
+        if score_value > int(highscore):
+            highscore = score_value
+
+        def isCollision1(asteroid1X, asteroid1Y, playerX, playerY):
+            distance = math.sqrt(math.pow(asteroid1X - playerX, 2) + math.pow(asteroid1Y - playerY, 2))
+
+            if distance < 50:
+                return True
+            else:
+                return False
+
+        def isCollision2(asteroid2X, asteroid2Y, playerX, playerY):
+            distance = math.sqrt(math.pow(asteroid2X - playerX, 2) + math.pow(asteroid2Y - playerY, 2))
+
+            if distance < 50:
+                return True
+            else:
+                return False
+
+        def isCollision3(asteroid3X, asteroid3Y, playerX, playerY):
+            distance = math.sqrt(math.pow(asteroid3X - playerX, 2) + math.pow(asteroid3Y - playerY, 2))
+
+            if distance < 50:
+                return True
+            else:
+                return False
+
+        coll1 = isCollision1(asteroid1X, asteroid1Y, playerX, playerY)
+        coll2 = isCollision2(asteroid2X, asteroid2Y, playerX, playerY)
+        coll3 = isCollision3(asteroid3X, asteroid3Y, playerX, playerY)
+
+        if coll1:
+            asteroid1Ychange = 0
+            asteroid2Ychange = 0
+            asteroid3Ychange = 0
+            asteroid1Y = 0
+            asteroid2Y = 0
+            asteroid3Y = 0
+            playerX_change = 0
+            playerY_change = 0
+            pygame.mixer.music.stop()
+            collision_sound.play()
+            time.sleep(1)
+            gameOver()
+
+        if coll2:
+            asteroid1Ychange = 0
+            asteroid2Ychange = 0
+            asteroid3Ychange = 0
+            asteroid1Y = 0
+            asteroid2Y = 0
+            asteroid3Y = 0
+            playerX_change = 0
+            playerY_change = 0
+            pygame.mixer.music.stop()
+            collision_sound.play()
+            time.sleep(1)
+            gameOver()
+
+        if coll3:
+            asteroid1Ychange = 0
+            asteroid2Ychange = 0
+            asteroid3Ychange = 0
+            asteroid1Y = 0
+            asteroid2Y = 0
+            asteroid3Y = 0
+            playerX_change = 0
+            playerY_change = 0
+            pygame.mixer.music.stop()
+            collision_sound.play()
+            time.sleep(1)
+            gameOver()
+
+        if asteroid1Ychange == 0 and asteroid2Ychange == 0 and asteroid3Ychange == 0:
+            pass
+
+        with open("Dodgem!/highscore.txt", "w") as f:
+            f.write(str(highscore))
+
+        pygame.display.update()
+
+
+introScreen()
