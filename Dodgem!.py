@@ -57,8 +57,6 @@ pygame.display.set_caption('Dodgem!')
 
 logo = pygame.image.load('Dodgem!/logoAsteroid.jpg')
 pygame.display.set_icon(logo)
-
-# Intro screen
 IntroFont = pygame.font.Font("freesansbold.ttf", 38)
 
 
@@ -93,7 +91,7 @@ def aboutImage(x, y):
                 run = False
 
 
-def play(x, y):
+def Play(x, y):
     playText = IntroFont.render("PLAY", True, (255, 0, 0))
     screen.blit(playText, (x, y))
 
@@ -117,17 +115,15 @@ def introScreen():
     while run:
         screen.fill((0, 0, 0))
         introImage(0, 0)
-        #FIXME Adjust coordinates
-        play(100, 450)
-        Controls(280, 450)
-        About(615, 450)
+        Play(330, 350)
+        Controls(570, 350)
+        About(913, 350)
 
         x, y = pygame.mouse.get_pos()
 
-        #FIXME Adjust coordinates
-        button1 = pygame.Rect(60, 440, 175, 50)
-        button2 = pygame.Rect(265, 440, 300, 50)
-        button3 = pygame.Rect(600, 440, 165, 50)
+        button1 = pygame.Rect(300, 400, 175, 50)
+        button2 = pygame.Rect(550, 400, 300, 50)
+        button3 = pygame.Rect(900, 400, 165, 50)
 
         pygame.draw.rect(screen, (255, 255, 255), button1)
         pygame.draw.rect(screen, (255, 255, 255), button2)
@@ -139,16 +135,17 @@ def introScreen():
                 countdown()
 
         if button2.collidepoint(x, y):
-            pygame.draw.rect(screen, (155, 0, 0 ), button2)
+            pygame.draw.rect(screen, (155, 0, 0), button2)
             if click:
-                Controls(0, 0)
+                controlsImage(0, 0)
 
         if button3.collidepoint(x, y):
             pygame.draw.rect(screen, (155, 0, 0), button3)
             if click:
-                About(0, 0)
+                aboutImage(0, 0)
 
         click = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -161,25 +158,16 @@ def introScreen():
 def countdown():
     font2 = pygame.font.Font('freesansbold.ttf', 85)
     countdownBackground = pygame.image.load("Dodgem!/gameBackground.png")
-    #FIXME Adjust coordinates
+
     three = font2.render('3', True, (187, 30, 16))
     two = font2.render('2', True, (255, 255, 0))
     one = font2.render('1', True, (51, 165, 50))
     go = font2.render('GO!!!', True, (0, 255, 0))
 
-    #FIXME Adjust coordinates
     screen.blit(countdownBackground, (0, 0))
     pygame.display.update()
 
-    screen.blit(three, (350, 250))
-    pygame.display.update()
-    time.sleep(1)
-
-    screen.blit(countdownBackground, (0, 0))
-    pygame.display.update()
-    time.sleep(1)
-
-    screen.blit(two, (350, 250))
+    screen.blit(three, (500, 300))
     pygame.display.update()
     time.sleep(1)
 
@@ -187,7 +175,7 @@ def countdown():
     pygame.display.update()
     time.sleep(1)
 
-    screen.blit(one, (350, 250))
+    screen.blit(two, (500, 300))
     pygame.display.update()
     time.sleep(1)
 
@@ -195,7 +183,15 @@ def countdown():
     pygame.display.update()
     time.sleep(1)
 
-    screen.blit(go, (350, 250))
+    screen.blit(one, (500, 300))
+    pygame.display.update()
+    time.sleep(1)
+
+    screen.blit(countdownBackground, (0, 0))
+    pygame.display.update()
+    time.sleep(1)
+
+    screen.blit(go, (450, 350))
     pygame.display.update()
     time.sleep(1)
     gameLoop()
@@ -207,14 +203,14 @@ def gameLoop():
     pygame.mixer.music.play()
     collision_sound = pygame.mixer.Sound('Dodgem!/collisionSound.wav')
     score_value = 0
-    font1 = pygame.font.Font("freesansbold.ttf, 25")
+    font1 = pygame.font.Font("freesansbold.ttf", 25)
 
     def showScore(x, y):
         score = font1.render("SCORE: " + str(score_value), True, (255, 0, 0))
         screen.blit(score, (x, y))
 
     with open("Dodgem!/highscore.txt", "r") as f:
-        highscore = f.read()
+        highscore = int(f.read())
 
     def showHighscore(x, y):
         Hiscore_text = font1.render("HiScore: " + str(highscore), True, (255, 0, 0))
@@ -228,26 +224,22 @@ def gameLoop():
         while run:
             screen.blit(gameOverImg, (0, 0))
             time.sleep(0.5)
-            #FIXME Adjust coordinates
-            showScore(330, 400)
+            showScore(950, 350)
             time.sleep(0.5)
-            showHighscore(330, 450)
+            showHighscore(950, 400)
             pygame.display.update()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-                    pygame.QUIT()
-                    sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         countdown()
                     if event.key == pygame.K_ESCAPE:
-                        pygame.QUIT()
+                        pygame.quit()
                         sys.exit()
 
     BG = pygame.image.load("Dodgem!/gameBackground.png")
-
     player = pygame.image.load("Dodgem!/playerShip.png")
     playerX = 350
     playerY = 495
@@ -255,17 +247,17 @@ def gameLoop():
     playerY_change = 0
 
     asteroid1 = pygame.image.load("Dodgem!/asteroid1.png")
-    asteroid1X = random.randint(178, 490)
+    asteroid1X = random.randint(200, 750)
     asteroid1Y = 100
     asteroid1Ychange = 10
 
     asteroid2 = pygame.image.load("Dodgem!/asteroid2.png")
-    asteroid2X = random.randint(178, 490)
+    asteroid2X = random.randint(200, 750)
     asteroid2Y = 100
     asteroid2Ychange = 10
 
     asteroid3 = pygame.image.load("Dodgem!/asteroid3.png")
-    asteroid3X = random.randint(178, 490)
+    asteroid3X = random.randint(200, 750)
     asteroid3Y = 100
     asteroid3Ychange = 10
 
@@ -273,10 +265,8 @@ def gameLoop():
     while run:
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT():
-                run = False
-                pygame.QUIT()
-                sys.exit()
+            #if event.type == pygame.QUIT():
+                #run = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -303,16 +293,16 @@ def gameLoop():
 
                 if event.key == pygame.K_DOWN:
                     playerY_change = 0
-        #FIXME Adjust coordinates
-        if playerX < 178:
-            playerX = 178
-        if playerX > 490:
-            playerX = 490
+
+        if playerX < 200:
+            playerX = 200
+        if playerX > 765:
+            playerX = 765
 
         if playerY < 0:
             playerY = 0
-        if playerY > 495:
-            playerY = 495
+        if playerY > 700:
+            playerY = 700
 
         screen.fill((0, 0, 0,))
         screen.blit(BG, (0, 0))
@@ -321,8 +311,8 @@ def gameLoop():
         screen.blit(asteroid1, (asteroid1X, asteroid1Y))
         screen.blit(asteroid2, (asteroid2X, asteroid2Y))
         screen.blit(asteroid3, (asteroid3X, asteroid3Y))
-        #FIXME Adjust coordinates
-        showScore(570, 280)
+
+        showScore(935, 390)
         showHighscore(0, 0)
 
         playerX += playerX_change
@@ -331,27 +321,27 @@ def gameLoop():
         asteroid1Y += asteroid1Ychange
         asteroid2Y += asteroid2Ychange
         asteroid3Y += asteroid3Ychange
-        #FIXME Adjust coordinates
-        if asteroid1Y > 670:
+
+        if asteroid1Y > 800:
             asteroid1Y = -100
-            asteroid1X = random.randint(178, 490)
+            asteroid1X = random.randint(200, 760)
             score_value += 1
-        if asteroid2Y > 670:
-            asteroid2Y = -150
-            asteroid2X = random.randint(178, 490)
+        if asteroid2Y > 800:
+            asteroid2Y = -200
+            asteroid2X = random.randint(200, 760)
             score_value += 1
-        if asteroid3Y > 670:
-            asteroid3Y = -200
-            asteroid3X = random.randint(178, 490)
+        if asteroid3Y > 800:
+            asteroid3Y = -300
+            asteroid3X = random.randint(200, 760)
             score_value += 1
 
-        if score_value > int(highscore):
+        if score_value > highscore:
             highscore = score_value
 
         def isCollision1(asteroid1X, asteroid1Y, playerX, playerY):
             distance = math.sqrt(math.pow(asteroid1X - playerX, 2) + math.pow(asteroid1Y - playerY, 2))
 
-            if distance < 50:
+            if distance < 30:
                 return True
             else:
                 return False
@@ -359,7 +349,7 @@ def gameLoop():
         def isCollision2(asteroid2X, asteroid2Y, playerX, playerY):
             distance = math.sqrt(math.pow(asteroid2X - playerX, 2) + math.pow(asteroid2Y - playerY, 2))
 
-            if distance < 50:
+            if distance < 30:
                 return True
             else:
                 return False
@@ -367,7 +357,7 @@ def gameLoop():
         def isCollision3(asteroid3X, asteroid3Y, playerX, playerY):
             distance = math.sqrt(math.pow(asteroid3X - playerX, 2) + math.pow(asteroid3Y - playerY, 2))
 
-            if distance < 50:
+            if distance < 30:
                 return True
             else:
                 return False
